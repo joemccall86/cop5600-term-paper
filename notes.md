@@ -64,9 +64,67 @@ exact locations of the attackers against the machine-learning algorithms *BU*
 and *BU$\prime$*, and found that they were very close. This indicates that the
 proposed learning algorithms are very effective.
 
+# Restless Pachers: Handling Exploration-Exploitation Tradeoffs in Security Domains
+
+This paper recognizes previous research in GSG but addresses the
+exploration-exploitation tradeoff. A patroller cannot defend and explore new
+territories simultaneously. Do they protect the targets that are already known
+to have a lot of poaching activities or expllore the targets that haven't been
+protected for a long time?
+
+The idea behind this paper is to model the problem as a Restless Multi-armed
+Bandit model to handle the limited observability challenge.
+
+They use a learning algorithm to learn the RMAB model based on the defender's
+historical observations.
+
+Third, they use the Whittle index policy to index the data, that can then be
+operated on using a binary search algorithm.
+
+For this term paper, I need to focus on the learning algorithm specifically.
+
+
+The learning model in use for this paper is Expectation Matching (EM)
+
+Partially Observable Markov Decision Process model (POMDP) models an agent's
+decision process. Every target in this game is modelled as a special POMDP
+model (as specified in section 4.1). They combine all of the POMDP models to
+form a special POMDP model that describes the whole problem. Solving the new
+POMDP model gives us the exact optimal strategy for the defender (Section 5).
+This can be solved naively, but grows exponentially based on the problem size.
+
+The paper runs experiments using a random strategy as a control group, the
+myopic (look ahead 1 round) strategy, exact POMDP (only for small scale
+problems mentioned in section 5), and Whittle Index Policy. This paper
+specifically compares the Whittle Index Policy to these other algorithms as
+baselines.
+
+On the large scale (n = 10), they cannot use the exact POMDP algorithm due to
+the large problem size. They do show that using the Whittle Index Policy
+out-performs all other strategies.
+
+Furthermore the runtime only increases linearly instead of exponentially like
+other algorithms.
+
+The paper compares the RMAB model to the models used in another security paper,
+and finds that it offers advantages when learning rounds become large.
+
+This paper compares itself to other work ("When Security Games Go Green"). The
+previous papers fail to caputre the defender's lack of observation of attacks.
+The defender can only see a few attacks because of the size of the are. The
+defender does not have full knowledge of all attacker's actions. The second
+limitation mentioned is that the previous work does not address the fact that
+defenders may not fully observe the attacker even though she's patrolling the
+area. This is referred to as observational uncertainty.
 
 
 # Definitions
+
+## Expectation Matching (EM)
+
+## Restless Multi-armed Bandit (RMAB)
+
+## Wittle index policy
 
 ## Stackelberg Security Games (SSG)
 
