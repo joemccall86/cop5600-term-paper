@@ -118,6 +118,78 @@ defenders may not fully observe the attacker even though she's patrolling the
 area. This is referred to as observational uncertainty.
 
 
+# Don't Put All Your Strategies in One Basket: Playing Green Security Games with Imperfect Prior Knowledge
+
+## Contributions
+
+MINION-sm: a novel online learning algorithm for GSGs whihc does not rely on
+any prior error-prone model of attacker behavior. Instead, it builds an
+implicit model of the attacker on-the-fly while simultaneously generating
+scheduling-constraint-aware patrols.
+
+
+MINION: a hybrid approach where our MINION-sm model and an ML model (based on
+historical data) are considered as two patrol planning experts and we obtain a
+balance between them based on their observed empircal performance.
+
+## Other Notes
+
+This paper cites several sources [11, 12, 15, 16, 27] of information that could
+be used as other examples of learning algorithms I can use on this paper.
+
+The basic premise behind existing work is that repeated interactions between
+patrollers and poachers provides the opportunity to gather data which can be
+used to learn models of poacher behavior. This paper asserts that this model is
+problematic:
+
+It assumes the collected data is a good representation of the actual poaching
+activities that occurred in the past ( and those that will occur in the
+future). In other words, our observed data can only prove what we saw, not what
+actually is happening. The attackers could be hiding their work very well. This
+is known as the "Silent Victim Problem."
+
+The data is unreliable (spatially).
+
+The MINION-sm model trades off exploitation of welll-known high-reward patrol
+routes with exporation of untried patrol routes to provide an online policy for
+generating randomized patrols. In other words, it addresses the trade-offs
+mentioned in the previous paper directly. It sounds like it favors exploration
+over exploitation.
+
+The MINION model combines both MINION-sm and a machine learning model (based on
+previous papers). MINION evaluates which model is better and takes decisions
+accordingly.
+
+Their experiment differs from previous work in that the detection of snares is
+disregarded. They assume the defenders can detect snares perfectly. It takes
+into account that patrols must start and end at the same spot, and must cover
+the same distance every time.
+
+## Expert I - MINION-sm
+MINION-sm starts with the FPL-UE (follow-the perturbed-leader with uniform
+exploration) algorithm. It randomly flips a coin to choose between
+exploration/exploitation. It is impractical for deployments in GSGs. MINION-sm
+adds scheduling constraints to this algorithm. Randomness is added to ensure
+the route chosen isn't fixed.
+
+## Expert II - Machine Learning Model
+
+Uses years of back-data to feed the inputs of the ML model. The outputs just
+give predictions about probability scores (attack risks).
+
+
+## Combining the two
+
+The algorithm "learns" when it is useful to rely on historical data. If it's
+useful, it will use the ML expert. Otherwise it will use the MINION-sm expert.
+
+## Results of experiment
+
+The MINION algorithm outperformed the ML-only algorithm drastically. The paper
+concludes that we should not overly rely on historical data to compute the next
+move.
+
+
 # Definitions
 
 ## Expectation Matching (EM)
@@ -136,7 +208,7 @@ TODO
 
 ## SUQR
 
-TODO
+Subject Utility Quantal Response
 
 ## Maximum Likelihood Estimation (MLE)
 
@@ -145,3 +217,10 @@ TODO
 ## Bayesian Updating
 
 TODO
+
+# Other notes
+
+Green Security Games is different than Stackelberg Security Games in that:
+
+* There are spatial/temporal scheduling considerations
+* There are many repeated attackers
