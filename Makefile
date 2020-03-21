@@ -7,4 +7,4 @@ all: term_paper.pdf
 	$(PANDOC) -N --filter pandoc-citeproc -o $@ $<
 
 clean:
-	rm -f *.pdf
+	rm -f term_paper.pdf
