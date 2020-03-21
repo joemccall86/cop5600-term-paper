@@ -21,6 +21,7 @@ bibliography:
 csl: ieee.csl
 secnumdepth: 2
 header-includes:
+  - \usepackage{mathtools}
   - \usepackage[normalem]{ulem}
   - \usepackage[utf8]{inputenc}
 ...
@@ -60,14 +61,50 @@ assumptions, and propose novel methods for improving defender strategy. Qian et
 al. [@qian16] show that the environment must be partially-observable to model
 the defender's decision to explore new areas or patrol areas known to have
 snares. Wang et al. [@wang19] introduce the idea that both attackers and
-defenders leave footsteps that can be used to evade and track. Finally Gholami
-et al. [@gholami19] show that a defender strategy that combines a
-machine-learning agent with an online learning algorithm that does not rely on
-prior information can outperform existing models.
+defenders have access to real-time information that can be used to evade and
+track. Finally Gholami et al. [@gholami19] show that a defender strategy that
+combines a machine-learning agent with an online learning algorithm that does
+not rely on prior information can outperform existing models.
 
 <!-- Discuss in the second section the methods or the theories that you
 studied. Summarize the methods that you have reviewed. -->
 # Methods/Theory
+
+## Green Security Games (GSG)
+
+The Green Security Game as introduced by Fang et al. [@fang15] is a zero-sum
+game. It is run in T ( $<\infty$ ) rounds, and each round has multiple
+episodes. The defender has K guards to protect N ($\ge K$) targets, each with a
+different reward. A guard (defender) can defend one target and an attacker can
+attack one target. If the attacker attacks an unguarded target, the defender is
+penalized and the attacker is rewarded. If the attacker attacks a defended
+target, the attacker is penalized and the defender is rewarded. After each
+round the defender assigns guards in order to maximize the expected utility.
+
+## Exploration/Exploitation Tradeoffs
+
+Explain what Qian et al. [@qian16] show as a shortcoming of GSG [@fang15].
+
+### Restless Multi-armed Bandit (RMAB) Problem
+
+### Whittle Index Policy Algorithm
+
+## Real-Time Information
+
+Explain what Want et al. [@wang19] show as shortcomings of prior work, and how
+GSG-I augments the existing game and DeDOL helps to solve it.
+
+### GSG-I Problem
+
+### DeDOL Algorithm
+
+## Imperfect Prior Knowledge
+
+Explain what Gholami et al. [@gholami19] show as shortcomings of prior work, and how MINION-sm and MINION help improve defender strategies in GSGs.
+
+### MINION-sm
+
+### MINION
 
 <!-- Summarize the results of the research. Then write up your reflection of
 the methods and/or theories that you studied in the selected paper. Be critical
@@ -75,11 +112,21 @@ in your analysis. Are the methods/theories that the authors present sound? What
 do you see as the weaknesses and strengths of the proposed methods? -->
 # Discussions
 
+Include:
+* GSG abstraction - benefits and trade-offs. What benefit does the GSG abstraction have over an attempted perfect simulation?
+* RMAB - How does this improve on the GSG abstraction? Are there any assumptions being made?
+* GSG-I - Same question
+* MINION - Is this seemingly the ultimate solution? How would it perform against GSG-I? How can its work be combined with previous work discussed in this paper?
+
 <!-- Write up a conclusion that summarizes your analysis of the research. Has
 the field been advanced with the research presented in the paper? What is the
 impact of the research on the field and what research questions should be
 addressed to advance the field? -->
 # Conclusions
+
+* Summarize research
+* Discuss how PAWS is helping law enforcement currently, and how these algorithms can be used to improve it
+* Find a unique idea as a future research goal
 
 # References
 
