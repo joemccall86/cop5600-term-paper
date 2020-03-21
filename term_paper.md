@@ -113,6 +113,7 @@ do you see as the weaknesses and strengths of the proposed methods? -->
 # Discussions
 
 Include:
+
 * GSG abstraction - benefits and trade-offs. What benefit does the GSG abstraction have over an attempted perfect simulation?
 * RMAB - How does this improve on the GSG abstraction? Are there any assumptions being made?
 * GSG-I - Same question
