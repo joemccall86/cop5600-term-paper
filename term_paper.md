@@ -7,13 +7,16 @@ abstract: |
   The field of Green Security Games (GSG) has proven useful in the protection of
   wildlife. By modelling attackers and defenders as intelligent agents in a
   repeated simulation we can employ a winning algorithm to deploy scarce
-  resources in actual green security scenarios. This paper summarizes the concept
+  resources in actual green security scenarios. Such an abstraction also serves
+  as the foundation upon which more intricate scenarios can be explored, and
+  subsequently adapted to by a learning agent. This paper summarizes the concept
   of GSGs, surveys the advancements that have been made, and suggests future
   opportunities for research.
 fontfamily: mathptmx 
 fontsize: 10pt
 bibliography: 
    - acm_2832581.2832611.bib
+   - acm_2891460.2891560.bib
    - acm_2936924.2936946.bib
    - acm_2994501.2994507.bib
    - deep_reinforcement.bib
@@ -68,43 +71,136 @@ not rely on prior information can outperform existing models.
 
 <!-- Discuss in the second section the methods or the theories that you
 studied. Summarize the methods that you have reviewed. -->
+<!-- Write about the methods and the theory that you studied. If applicable,
+write about the application of the methods/theory. Are the methods/theory that
+you have come across sound by your judgment?  -->
 # Methods/Theory
+
+* Include evaluation on soundness of each method presented. Why is this valid?
 
 ## Green Security Games (GSG)
 
 The Green Security Game as introduced by Fang et al. [@fang15] is a zero-sum
 game. It is run in T ( $<\infty$ ) rounds, and each round has multiple
-episodes. The defender has K guards to protect N ($\ge K$) targets, each with a
-different reward. A guard (defender) can defend one target and an attacker can
-attack one target. If the attacker attacks an unguarded target, the defender is
-penalized and the attacker is rewarded. If the attacker attacks a defended
-target, the attacker is penalized and the defender is rewarded. After each
-round the defender assigns guards in order to maximize the expected utility.
+episodes. At the end of each episode the defender can change her deployment
+strategy. The defender has K guards to protect N ($\ge K$) targets, each with a
+different reward. A guard (defender) can defend one target $i$ and an attacker
+can attack one target. If the attacker attacks an unguarded target, the
+defender is penalized and the attacker is rewarded. If the attacker attacks a
+defended target, the attacker is penalized and the defender is rewarded. After
+each round the defender assigns guards in order to maximize the expected
+utility.
+
+<!-- There are further details regarding the coverage vector <c_i>, etc. Do I
+copy this down verbatim? Is it plagiarism if I do? -->
+
+### Defender
+
+The defender strategy is represented by a coverage vector $c = \langle c_i
+\rangle$ where $0 \le c_i \le 1$ is the probability that target $i$ is covered
+by a guard. It also satisfies $\sum_{i=1}^{N}c_i \le K$ [@fang15]. In other
+words it is impossible to have more total coverage than there are guards.
+
+To compute the utility of the defender we use @fig:defenderStrategy. The
+expected utility for a defender with a given strategy $c$ is the probability
+target $i$ is covered times the reward of that target for the defender, plus
+the probability that target is not covered times the penalty of that target for
+the defender.
+
+$$
+U_i^d(c) = c_i R_i^d + (1 - c_i)P_i^d
+$${#fig:defenderStrategy}
+
+The defender's strategy in round $t$ is denoted by $c^t$.
+
+<!--
+The PlanAhead-M (PA-M) algorithm is introduced to produce the optimal strategy
+for the defender. Its goal is to provide balance between attempting to compute
+the optimal strategy for all rounds simultaneously (which be comes
+computationally expensive as $T$ becomes large), and simply defending the
+targets with the highest expected utility. It computes the "optimal strategy for
+the current round as if it is the $M^{th}$ last round of the game" [@fang15].
+-->
+
+Several algorithms are introduced to attempt to optimize the defender strategy.
+They include PlanAhead-M (PA-M), FixedSequence-M (FS-M), and an enhanced PA-M
+that incorporates Bayesian Updating (BU).
+
+### Attacker 
+
+The strategy utilized by the attacker depends on the Subject Utility Quantal
+Response (SUQR) concept, which has proven to accurately model bounded
+rationality of human attackers [@nguyen13]. 
+
+In other words, the attacker uses the his belief in the defender's strategy
+$c_t$ and his limited memory of previous rounds to decide on the target to
+attack in that round.
+
+<!-- Potential for criticism: these assume the attackers will have no access to
+automated tools. However as computing resources become more available attackers
+may cease to act boundedly rational. -->
 
 ## Exploration/Exploitation Tradeoffs
 
-Explain what Qian et al. [@qian16] show as a shortcoming of GSG [@fang15].
+Qian et al. [@qian16] suggest that the GSGs as proposed by Fang et al.
+[@fang15] fail to address an important reality in patrolling an area: the
+attacks on unguarded targets can only be discovered if the guards explore that
+area first. In other words, the environment is only partially observable by the
+defender. The defender must choose between patrolling targets with known
+poaching activities and exploring the targets that may or may not have been
+attacked. 
 
 ### Restless Multi-armed Bandit (RMAB) Problem
 
-### Whittle Index Policy Algorithm
+To solve this problem the game is modelled as a Restless Multi-armed Bandit
+(RMAP) problem. In such a problem, limited resources (guards) must protect
+several targets, but they have no insight into targets which they do not
+protect. It is considered "restless" because the non-activated arms transition
+state as well as activated arms.
+
+
+### Expectation-Maximization (EM) Learning Algorithm
+
+Explain the EM learning algorithm at a high-level and how it addresses RMAB.
+
+### Whittle Index 
+
+Explain how Whittle Index is used in conjunction with the EM algorithm to help the defender plan. The Whittle index is the heuristic index policy that assists the agent in deciding which arm to activate. 
 
 ## Real-Time Information
 
-Explain what Want et al. [@wang19] show as shortcomings of prior work, and how
-GSG-I augments the existing game and DeDOL helps to solve it.
+* Explain what Want et al. [@wang19] show as shortcomings of prior work, and how GSG-I augments the existing game and DeDOL helps to solve it.
 
 ### GSG-I Problem
 
+* GSG-I is an augmentation of GSG that includes real-time information
+* Explain how it is closer to reality than GSG
+
 ### DeDOL Algorithm
+
+* Explain what the Double-Oracle framework is
+* Expand upon the domain-specific heuristics it uses
 
 ## Imperfect Prior Knowledge
 
-Explain what Gholami et al. [@gholami19] show as shortcomings of prior work, and how MINION-sm and MINION help improve defender strategies in GSGs.
+* Explain what Gholami et al. [@gholami19] show as shortcomings of prior work, and how MINION-sm and MINION help improve defender strategies in GSGs.
+* Historical information is unreliable because it exhibits spatial bias [@gholami19]. In other words, since we only know about attacks that we can observe, and the area around guard posts is more observed than other areas, historical data will reward guarding targets closer to the outposts much higher than other, potentially more valuable targets.
+* Show how Gholami et al. [@gholami19] adjusted the GSG presented in [@fang15] to illustrate their point.
+* Introduce the two experts used in the MINION algorithm - MINION-sm and Machine Learning
 
 ### MINION-sm
 
+* Explain MINION-sm as the online-learning algorithm without historical data
+* MINION-sm starts with the FPL-UE (follow-the perturbed-leader with uniform exploration) algorithm. It randomly flips a coin to choose between exploration/exploitation. It is impractical for deployments in GSGs. MINION-sm adds scheduling constraints to this algorithm. Randomness is added to ensure the route chosen isn't fixed.
+
+### Machine Learning (ML)
+
+* Show how MINION adds a Machine-Learning element to take advantage of historical data.
+
 ### MINION
+
+* Show how patrol planning balances between the two experts
+* State that the experiments showed that MINION outperformed MINION-sm and ML individually
 
 <!-- Summarize the results of the research. Then write up your reflection of
 the methods and/or theories that you studied in the selected paper. Be critical
@@ -118,6 +214,24 @@ Include:
 * RMAB - How does this improve on the GSG abstraction? Are there any assumptions being made?
 * GSG-I - Same question
 * MINION - Is this seemingly the ultimate solution? How would it perform against GSG-I? How can its work be combined with previous work discussed in this paper?
+* Additional insight - how this problem is still not fully addressed, and what could be done in further research.
+
+The introduction of GSG has effectively abstracted the conflict between
+poachers and the law enforcement agents attempting to stop them. The ability to
+simulate multiple rounds against a simulated human presents a clear benefit for
+learning algorithms to assist in the deployment of guards to patrol vast areas.
+Fang et al. [@fang15] showed that the enhanced PA-M strategy provided a high
+average expected utility compared to the baseline algorithm used. Assuming the
+abstraction is valid, this indicates the strategy would be successful if
+employed by actual law enforcement.
+
+However, the assumption that adversaries act with bounded rationality may only
+be useful in the short-term. Access to computing resources (and even the PAWS
+application) is growing more ubiquitous, and it's only a matter of time before
+poachers have the same access to the AI research as law enforcement. A means to
+detect whether or not the attacker is utilizing AI assistance would be highly
+valuable in this case.
+
 
 <!-- Write up a conclusion that summarizes your analysis of the research. Has
 the field been advanced with the research presented in the paper? What is the

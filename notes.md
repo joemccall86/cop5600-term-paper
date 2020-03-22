@@ -122,7 +122,7 @@ area. This is referred to as observational uncertainty.
 
 ## Contributions
 
-MINION-sm: a novel online learning algorithm for GSGs whihc does not rely on
+MINION-sm: a novel online learning algorithm for GSGs which does not rely on
 any prior error-prone model of attacker behavior. Instead, it builds an
 implicit model of the attacker on-the-fly while simultaneously generating
 scheduling-constraint-aware patrols.
@@ -150,7 +150,7 @@ is known as the "Silent Victim Problem."
 
 The data is unreliable (spatially).
 
-The MINION-sm model trades off exploitation of welll-known high-reward patrol
+The MINION-sm model trades off exploitation of well-known high-reward patrol
 routes with exporation of untried patrol routes to provide an online policy for
 generating randomized patrols. In other words, it addresses the trade-offs
 mentioned in the previous paper directly. It sounds like it favors exploration
