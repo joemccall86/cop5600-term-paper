@@ -8,9 +8,9 @@ abstract: |
   wildlife. By modelling attackers and defenders as intelligent agents in a
   repeated simulation we can employ a winning algorithm to deploy scarce
   resources in actual green security scenarios. Such an abstraction also serves
-  as the foundation upon which more intricate scenarios can be explored, and
+  as the foundation upon which more intricate scenarios can be built, explored, and
   subsequently adapted to by a learning agent. This paper summarizes the concept
-  of GSGs, surveys the advancements that have been made, and suggests future
+  of GSGs, surveys the advancements that have been made, provides analysis of the validity of the advancements, and suggests future
   opportunities for research.
 fontfamily: mathptmx 
 fontsize: 10pt
@@ -41,7 +41,7 @@ paper. -->
 # Introduction
 
 The domain of green security entails the struggle between poachers/illegal
-fishers and rangers charged to protect the wildlife. The rangers are limited in
+fishers and rangers charged to protect the wildlife. <!-- FEEDBACK: Expand this. Give some references to the literature. --> The rangers are limited in
 number and have strict constraints applied. 
 
 In the field of Artificial Intelligence, Stackelberg Security Games (SSG) have
@@ -55,9 +55,7 @@ caught, while the defender's goal is to detect both the snare and the attacker.
 Furthermore, the attacker behaves human-like and does not always behave
 optimally.
 
-The game is run in episodes [@fang15]. By simulating multiple rounds of this
-game, an optimized defender strategy is formed. This strategy is applicable to
-assist real-world rangers in deciding where and how patrols should be deployed.
+The game is run in episodes [@fang15]. Each round the attacker chooses a target based on the highest estimated utility, and the defender must deploy its resources judiciously to defend those targets. The defender does not have enough resources to defend all targets, so it must employ a strategy to decide which targets should be defended and which targets should be left defenseless. By simulating multiple rounds of this game, an optimized defender strategy is formed. This strategy is applicable to assist real-world rangers in deciding where and how patrols should be deployed.
 
 Advancements in this field introduce additional constraints, challenge
 assumptions, and propose novel methods for improving defender strategy. Qian et
@@ -68,6 +66,11 @@ defenders have access to real-time information that can be used to evade and
 track. Finally Gholami et al. [@gholami19] show that a defender strategy that
 combines a machine-learning agent with an online learning algorithm that does
 not rely on prior information can outperform existing models.
+
+The paper is organized in three sections. The Methods/Theory section summarizes the methods for the these papers. The Discussions section summarizes the results, and reflects on the soundness of each paper. The Conclusions section analyzes the research, and provides ideas for further research.
+
+<!-- FEEDBACK -->
+<!-- At the end of the introduction give a description of what lies ahead to give guidance to the reader. E.g. The remainder of the article is organized as follows. The next section, ... -->
 
 <!-- Discuss in the second section the methods or the theories that you
 studied. Summarize the methods that you have reviewed. -->
