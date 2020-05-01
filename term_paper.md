@@ -21,6 +21,8 @@ bibliography:
    - acm_2994501.2994507.bib
    - deep_reinforcement.bib
    - acm_3306127.3331719.bib
+   - illegal-killing-for-ivory-drives-global-decline-in-african-elephants.bib
+   - citation-320268965.bib
 csl: ieee.csl
 secnumdepth: 2
 header-includes:
@@ -41,10 +43,9 @@ paper. -->
 # Introduction
 
 The domain of green security entails the struggle between poachers/illegal
-fishers and rangers charged to protect the wildlife. <!-- FEEDBACK: Expand this. Give some references to the literature. --> The rangers are limited in
-number and have strict constraints applied. 
+fishers and rangers charged to protect the wildlife. Endangered animals are trapped and killed/trafficked by poachers, and those charged to protect wildlife face a shortage of resources. Typically there are more targets than there are rangers to patrol them, and poachers will continuously attack different targets. Defenders must also protect potentially un-explored/under-explored areas, and operate out of fixed patrol towers to which they must return at the end of a shift. The deployment of limited resources under strict constraints can be facilitated using artificial intelligence. Despite best efforts, species like the African elephant are globally declining due to poaching [@Wittemyer201403984]. Certain strategies to address this treat have been ineffective at best [@inbook]. An approach is needed to capture poachers as they attack, which requires somehow predicting where and when they will attack. These types of predictions fit well within the field of Artificial Intelligence (AI).
 
-In the field of Artificial Intelligence, Stackelberg Security Games (SSG) have
+Within AI, Stackelberg Security Games (SSG) have
 been used to predict potential attacker moves in order to assist in defender
 strategies. The application of this strategy to green security domains is
 called Green Security Games (GSG, introduced by [@fang15]). The game abstracts
@@ -145,13 +146,18 @@ may cease to act boundedly rational. -->
 
 ## Exploration/Exploitation Tradeoffs
 
-Qian et al. [@qian16] suggest that the GSGs as proposed by Fang et al.
-[@fang15] fail to address an important reality in patrolling an area: the
+Qian et al. [@qian16] built upon the work done by Fang et al. [@fang15] by introducing a new constraint that fit the real-world better: the dilemma between exploring new territories and continuing to patrol known hot-spots. 
+
+The authors suggest that the original GSGs fail to consider that 
 attacks on unguarded targets can only be discovered if the guards explore that
 area first. In other words, the environment is only partially observable by the
 defender. The defender must choose between patrolling targets with known
 poaching activities and exploring the targets that may or may not have been
-attacked. 
+attacked.
+
+Intuitively, the more the defender patrols an area, the less likely that area will be attacked, given the attacker can observe the defender's actions. Attacks are discretized into intensity. A more intense attack will yield a higher reward for the attacker, but is more observable by the defender, while a less intense attack yields a lower reward but is more covert. The experiment done by Qian et al. [@qian16] models this property using a combination of transition matrices and an observation matrix. The experiment intends to learn the transition matrices, the observation matrix, and a value for the initial belief using an expectation-maximization algorithm (a technique used to handle non-observable variables). Each round, adjustments are made to the attacker transition matrices, a defender observation matrix, and an initial belief value.
+
+The resulting values found by the experiment are mostly useful in reality. The resulting matrix of a fully-trained agent from this experiment can be considered rational if it predicts where and when actual attacks happen. Thus the research is sound.
 
 ### Restless Multi-armed Bandit (RMAB) Problem
 
@@ -161,14 +167,12 @@ several targets, but they have no insight into targets which they do not
 protect. It is considered "restless" because the non-activated arms transition
 state as well as activated arms.
 
+The defender choosing an area to patrol is akin to the "pulling" of an arm for that round for a reward (the defender catches the attacker). Likewise, the attacker choosing to attack an area is "pulling" that arm for a reward (the attacker successfully ensnares an animal).
 
-### Expectation-Maximization (EM) Learning Algorithm
-
-Explain the EM learning algorithm at a high-level and how it addresses RMAB.
 
 ### Whittle Index 
 
-Explain how Whittle Index is used in conjunction with the EM algorithm to help the defender plan. The Whittle index is the heuristic index policy that assists the agent in deciding which arm to activate. 
+The Whittle index is the heuristic index policy that assists the agent in deciding which arm to activate. Basically, the higher the Whittle index, the more likely the attacker or defender is to attack of defend an area respectively.
 
 ## Real-Time Information
 
@@ -214,7 +218,10 @@ do you see as the weaknesses and strengths of the proposed methods? -->
 Include:
 
 * GSG abstraction - benefits and trade-offs. What benefit does the GSG abstraction have over an attempted perfect simulation?
-* RMAB - How does this improve on the GSG abstraction? Are there any assumptions being made?
+
+
+The work done by Qian et al. [@qian16] successfully introduce a more realistic scenario when simulating GSGs. The use of the RMAB is a useful abstraction of the real-world dilemma between exploring new areas and patrolling existing areas. The results of the experiment clearly show an improvement over existing models, especially as learning rounds increase. Care must be taken to address the fact that poachers are often well-funded [@inbook] and have just as much observability of the defenders as the defenders do of the poachers.
+
 * GSG-I - Same question
 * MINION - Is this seemingly the ultimate solution? How would it perform against GSG-I? How can its work be combined with previous work discussed in this paper?
 * Additional insight - how this problem is still not fully addressed, and what could be done in further research.
