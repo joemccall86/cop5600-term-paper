@@ -80,12 +80,16 @@ write about the application of the methods/theory. Are the methods/theory that
 you have come across sound by your judgment?  -->
 # Methods/Theory
 
-* Include evaluation on soundness of each method presented. Why is this valid?
+<!-- * Include evaluation on soundness of each method presented. Why is this valid? -->
+
+The methods and theory of each paper are described below. Included are the environment as described by the researcher, the method by which a trained AI agent interacts with the environment, and the output of the simulation. It is then discussed why the research is considered valid.
 
 ## Green Security Games (GSG)
 
 The Green Security Game as introduced by Fang et al. [@fang15] is a zero-sum
-game. It is run in T ( $<\infty$ ) rounds, and each round has multiple
+game, meaning that a positive environment for one player is a negative environment for the other. Specifically, for a given reward function, either the attacker is successful, or the defender, but not both. 
+
+The game is run in T ( $<\infty$ ) rounds, and each round has multiple
 episodes. At the end of each episode the defender can change her deployment
 strategy. The defender has K guards to protect N ($\ge K$) targets, each with a
 different reward. A guard (defender) can defend one target $i$ and an attacker
@@ -93,10 +97,24 @@ can attack one target. If the attacker attacks an unguarded target, the
 defender is penalized and the attacker is rewarded. If the attacker attacks a
 defended target, the attacker is penalized and the defender is rewarded. After
 each round the defender assigns guards in order to maximize the expected
-utility.
+utility. The attacker and defender strategies are described below.
 
 <!-- There are further details regarding the coverage vector <c_i>, etc. Do I
 copy this down verbatim? Is it plagiarism if I do? -->
+
+### Attacker 
+
+The strategy utilized by the attacker depends on the Subject Utility Quantal
+Response (SUQR) concept, which has proven to accurately model bounded
+rationality of human attackers [@nguyen13]. 
+
+In other words, the attacker uses the his belief in the defender's strategy
+$c_t$ and his limited memory of previous rounds to decide on the target to
+attack in that round. This definition is given formally in [@fang15].
+
+<!-- Potential for criticism: these assume the attackers will have no access to
+automated tools. However as computing resources become more available attackers
+may cease to act boundedly rational. -->
 
 ### Defender
 
@@ -126,23 +144,14 @@ targets with the highest expected utility. It computes the "optimal strategy for
 the current round as if it is the $M^{th}$ last round of the game" [@fang15].
 -->
 
-Several algorithms are introduced to attempt to optimize the defender strategy.
-They include PlanAhead-M (PA-M), FixedSequence-M (FS-M), and an enhanced PA-M
-that incorporates Bayesian Updating (BU).
+The objective is to maximize the defender's average utility over the all the rounds of the game. This is done with a planning algorithm. Each episode the defender uses the configured algorithm to determine which areas to defend. The discussed algorithms include PlanAhead-M (PA-M), FixedSequence-M (FS-M), and an enhanced PA-M
+that incorporates Bayesian Updating (BU). They are formally defined in [@fang15] and evaluated in the experiment. In particular, BU allows the learning algorithm to build a probability distribution to predict where the attacker will attack, based on historical data.
 
-### Attacker 
+<!-- Note: this is finding the maximum. It may get stuck in a local maxima -->
 
-The strategy utilized by the attacker depends on the Subject Utility Quantal
-Response (SUQR) concept, which has proven to accurately model bounded
-rationality of human attackers [@nguyen13]. 
+### Output
 
-In other words, the attacker uses the his belief in the defender's strategy
-$c_t$ and his limited memory of previous rounds to decide on the target to
-attack in that round.
-
-<!-- Potential for criticism: these assume the attackers will have no access to
-automated tools. However as computing resources become more available attackers
-may cease to act boundedly rational. -->
+The experiment evaluates the performance of a learning GSG algorithm with the baseline algorithms typically found in Stackelberg Security Games, and a non-learning myopic strategy which does not consider historical data. The experiment is run under controlled conditions under a strict time limit with the same data. The experiment is sound.
 
 ## Exploration/Exploitation Tradeoffs
 
@@ -157,22 +166,23 @@ attacked.
 
 Intuitively, the more the defender patrols an area, the less likely that area will be attacked, given the attacker can observe the defender's actions. Attacks are discretized into intensity. A more intense attack will yield a higher reward for the attacker, but is more observable by the defender, while a less intense attack yields a lower reward but is more covert. The experiment done by Qian et al. [@qian16] models this property using a combination of transition matrices and an observation matrix. The experiment intends to learn the transition matrices, the observation matrix, and a value for the initial belief using an expectation-maximization algorithm (a technique used to handle non-observable variables). Each round, adjustments are made to the attacker transition matrices, a defender observation matrix, and an initial belief value.
 
-The resulting values found by the experiment are mostly useful in reality. The resulting matrix of a fully-trained agent from this experiment can be considered rational if it predicts where and when actual attacks happen. Thus the research is sound.
-
 ### Restless Multi-armed Bandit (RMAB) Problem
 
-To solve this problem the game is modelled as a Restless Multi-armed Bandit
-(RMAP) problem. In such a problem, limited resources (guards) must protect
+The dilemma between exploration and exploitation is modelled as a Restless Multi-armed Bandit (RMAB) problem. In such a problem, limited resources (guards) must protect
 several targets, but they have no insight into targets which they do not
-protect. It is considered "restless" because the non-activated arms transition
-state as well as activated arms.
+protect. In a traditional multi-armed bandit problem the player attempts to maximize his score by pulling one more arms of the slot machine to maximize the reward. The restless variant is introduced here to show that non-activated arms (i.e., unexplored areas) affect the "payout" of the activated arms. This means the environment being simulated is stochastic.
 
-The defender choosing an area to patrol is akin to the "pulling" of an arm for that round for a reward (the defender catches the attacker). Likewise, the attacker choosing to attack an area is "pulling" that arm for a reward (the attacker successfully ensnares an animal).
+When RMAB is applied to GSG, the defender choosing an area to patrol is akin to the "pulling" of an arm for that round for a reward (the defender catches the attacker). Likewise, the attacker choosing to attack an area is "pulling" that arm for a reward (the attacker successfully ensnares an animal).
 
 
 ### Whittle Index 
 
 The Whittle index is the heuristic index policy that assists the agent in deciding which arm to activate. Basically, the higher the Whittle index, the more likely the attacker or defender is to attack of defend an area respectively.
+
+### Output
+
+A fully-trained agent from this experiment can be considered rational if it predicts where and when actual attacks happen. The simulation more closely matches the real world given the addition of the exploration/exploitation dilemma. This is an improvement over a model that ignores such a dilemma, so the research is valid.
+
 
 ## Real-Time Information
 
@@ -241,6 +251,8 @@ application) is growing more ubiquitous, and it's only a matter of time before
 poachers have the same access to the AI research as law enforcement. A means to
 detect whether or not the attacker is utilizing AI assistance would be highly
 valuable in this case.
+
+<!-- Discuss over-fitting -->
 
 
 <!-- Write up a conclusion that summarizes your analysis of the research. Has
