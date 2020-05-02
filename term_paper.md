@@ -185,6 +185,32 @@ The Whittle index is the heuristic index policy that assists the agent in decidi
 
 A fully-trained agent from this experiment can be considered rational if it predicts where and when actual attacks happen. The simulation more closely matches the real world given the addition of the exploration/exploitation dilemma. This is an improvement over a model that ignores such a dilemma, so the research is valid.
 
+## Imperfect Prior Knowledge
+
+The work done by Fang et al. [@fang15] and Qian et al. [@qian16] serve as a foundation upon which Gholami et al. [@gholami19] build. They show that a significant shortcoming is that the collected data on attacked targets (i.e., previously failed attempts prevent poaching) is highly biased toward the normal patrol routes. In other words, since we only know about attacks that we can observe, and the area around guard posts is more observed than other areas, historical data will reward guarding targets closer to the outposts much higher than other, potentially more valuable targets.
+
+A modification of GSG is made to enhance the realism of the simulation. Routes taken by attackers and defenders take into account geographic features that affect the route's feasibility. Furthermore a player can only travel so far in a single shift, before returning to base. This is modelled using a "time-unrolled graph" [@gholami19], where each node is a cell reachable from the previous cell. The RMAB strategy is used in this case as well, though it is known as "adversarial bandit" in this paper. 
+
+To maximize the utility of the defender in this modified game Gholami et al. [@gholami19] introduce MINION (MultI-expert oNline model for constraIned patrOl plaNning [sic]). As its name suggests, it employs the results of two AI agents - an online real-time agent called MINION-sm (sub-module) and a ML agent trained on historical data. The agents are explained in the sections below, and the MINION algorithm is expanded upon.
+
+<!-- Assumption for simplicity: the defender can detect snares perfectly -->
+
+### MINION-sm
+
+MINION-sm as the online-learning algorithm that is used without historical data. It starts with the FPL-UE (follow-the perturbed-leader with uniform exploration) algorithm. It then randomly flips a coin to choose between exploration/exploitation. MINION-sm then adds scheduling constraints to FPL-UE. During the exploration phase it chooses a route using a random approach. During the exploitation phase it chooses an optimized route based on the estimated rewards from previous rounds.
+
+### Machine Learning (ML)
+
+The machine learning agent takes in years of historical data as inputs and gives predictions of attacks at certain locations in an observation vector. The agent is trained on this data until the error rate is minimized.
+
+### MINION
+
+The MINION algorithm combines the advice given by MINION-sm and ML. It starts with MINION-sm. At the end of each round the historical performance of each expert is assessed, and the results are used to decide which expert will be used in the next round. In other words, MINION learns whether the ML expert based on historical data is reliable or not.
+
+### Output
+
+MINION is run in a fixed number of rounds against other defender strategies. A result showing improved performance of MINION over others would yield a potential real-world strategy. Thus the research is valid.
+
 
 ## Real-Time Information
 
@@ -210,34 +236,13 @@ DeDOL uses a neural network to learn successful defender strategies for fixed mo
 
 The simulation runs the now more-complex GSG-I game with DeDOL, and compares it with conterfactual regret (CFR) minimization on small games, which is a known solution to extensive-form games. A good result indicates an improvement to existing processes, so the method is sound.
 
-## Imperfect Prior Knowledge
-
-* Explain what Gholami et al. [@gholami19] show as shortcomings of prior work, and how MINION-sm and MINION help improve defender strategies in GSGs.
-* Historical information is unreliable because it exhibits spatial bias [@gholami19]. In other words, since we only know about attacks that we can observe, and the area around guard posts is more observed than other areas, historical data will reward guarding targets closer to the outposts much higher than other, potentially more valuable targets.
-* Show how Gholami et al. [@gholami19] adjusted the GSG presented in [@fang15] to illustrate their point.
-* Introduce the two experts used in the MINION algorithm - MINION-sm and Machine Learning
-
-### MINION-sm
-
-* Explain MINION-sm as the online-learning algorithm without historical data
-* MINION-sm starts with the FPL-UE (follow-the perturbed-leader with uniform exploration) algorithm. It randomly flips a coin to choose between exploration/exploitation. It is impractical for deployments in GSGs. MINION-sm adds scheduling constraints to this algorithm. Randomness is added to ensure the route chosen isn't fixed.
-
-### Machine Learning (ML)
-
-* Show how MINION adds a Machine-Learning element to take advantage of historical data.
-
-### MINION
-
-* Show how patrol planning balances between the two experts
-* State that the experiments showed that MINION outperformed MINION-sm and ML individually
-
 <!-- Summarize the results of the research. Then write up your reflection of
 the methods and/or theories that you studied in the selected paper. Be critical
 in your analysis. Are the methods/theories that the authors present sound? What
 do you see as the weaknesses and strengths of the proposed methods? -->
 # Discussions
 
-Include:
+This section discusses the experimental results of the work outlined in this paper, along with its contributions to the field of GSG.
 
 The introduction of GSG has effectively abstracted the conflict between
 poachers and the law enforcement agents attempting to stop them. The ability to
@@ -250,19 +255,24 @@ employed by actual law enforcement.
 
 The work done by Qian et al. [@qian16] successfully introduce a more realistic scenario when simulating GSGs. The use of the RMAB is a useful abstraction of the real-world dilemma between exploring new areas and patrolling existing areas. The results of the experiment clearly show an improvement over existing models, especially as learning rounds increase. Care must be taken to address the fact that poachers are often well-funded [@inbook] and have just as much observability of the defenders as the defenders do of the poachers.
 
+Gholami et al. [@gholami19] found that a combination of experts in their MINION algorithm significantly out-performed existing algorithms in traditional GSGs. It also follows that the nature of the online expert-evaluation not only rules out faulty historical data, but an over-fitted ML expert. It is remarkable that the combination of two strategies can outperform each individual strategy.
+
 GSG-I was introduced by Wang et al. [@wang19] revealed that real-time information adds a measure of complexity to GSG, but makes the abstraction more accurate. Furthermore, while their simulations could only train on small games, the resulting trained neural network out-performed existing extensive-form games when tested in a larger game. This is a very successful advancement in the field and will likely lead to more sophisticated patrol strategies.
 
-* MINION - Is this seemingly the ultimate solution? How would it perform against GSG-I? How can its work be combined with previous work discussed in this paper?
-* Additional insight - how this problem is still not fully addressed, and what could be done in further research.
+There are many additional areas of research in the field of GSG. Just within the scope of this paper, one must wonder if the assumptions on historical data brought up by Gholami et al. [@gholami19] affect the simulation run by Wang et al. Furthermore, could a MINION agent result in improvements when DeDOL is combined with MINION-sm?
 
-However, the assumption that adversaries act with bounded rationality may only
+Additionally, the abstraction that GSG provides is necessarily loose, but still can be further refined. For example, how have recent ivory laws protecting elephants [@Wittemyer201403984] affected the validity of the historical data? Or more grimly, how can the decline in the numbers of endangered animals affect the availability of more attacks?
+
+More importantly, the GSG papers above assume that the adversaries act with bounded rationality (given their limited observability of defender strategies). However this assumption may only
 be useful in the short-term. Access to computing resources (and even the PAWS
 application) is growing more ubiquitous, and it's only a matter of time before
 poachers have the same access to the AI research as law enforcement. A means to
 detect whether or not the attacker is utilizing AI assistance would be highly
-valuable in this case.
+valuable in this case. For example, the defending agent could keep track of how many times a prediction with a high confidence is wrong. Once that counter reaches a threshold it would suggest that the attacker somehow has knowledge of that agent's predictions. This is an area of AI that is very much worth exploring.
 
 <!-- Discuss over-fitting -->
+
+<!-- historical data - age a factor? -->
 
 
 <!-- Write up a conclusion that summarizes your analysis of the research. Has
