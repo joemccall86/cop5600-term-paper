@@ -23,6 +23,8 @@ bibliography:
    - acm_3306127.3331719.bib
    - illegal-killing-for-ivory-drives-global-decline-in-african-elephants.bib
    - citation-320268965.bib
+   - acm_1671238.bib
+   - citation-221345955.bib
 csl: ieee.csl
 secnumdepth: 2
 header-includes:
@@ -87,7 +89,7 @@ The methods and theory of each paper are described below. Included are the envir
 ## Green Security Games (GSG)
 
 The Green Security Game as introduced by Fang et al. [@fang15] is a zero-sum
-game, meaning that a positive environment for one player is a negative environment for the other. Specifically, for a given reward function, either the attacker is successful, or the defender, but not both. 
+game, meaning that a positive environment for one player is a negative environment for the other. Specifically, for a given reward function, either the attacker is successful, or the defender, but not both. The world is a grid, and the attacker attempts to attack a cell while the defender tries to prevent the attack by guarding the cell.
 
 The game is run in T ( $<\infty$ ) rounds, and each round has multiple
 episodes. At the end of each episode the defender can change her deployment
@@ -186,17 +188,27 @@ A fully-trained agent from this experiment can be considered rational if it pred
 
 ## Real-Time Information
 
-* Explain what Want et al. [@wang19] show as shortcomings of prior work, and how GSG-I augments the existing game and DeDOL helps to solve it.
+The work done by Fang et al. [@fang15] and Qian et al. [@qian16] describe a partially observable environment in which the attacking agent and the defending agent can observe the actions of the other when they happen. Attackers can observe a defender patrolling an area, and a defender can observe an attacker's attack. This work describes historical information, but in an actual patrol real-time information becomes available, for example when a patrol encounters footprints. Wang et al. [@wang19] addresses this by modelling real-time information to the game. A new learning-based algorithm is introduced (DeDOL) to help the defenders optimize their patrols.
 
-### GSG-I Problem
+### GSG-I
 
-* GSG-I is an augmentation of GSG that includes real-time information
-* Explain how it is closer to reality than GSG
+Similar to GSG [@fang15], GSG-I maps the world into a grid, is a zero-sum game between the attacker and the defender, and is episodic. A key difference is when attackers and defenders move they now leave detectable footprints. Both players employ multiple strategies (e.g., follow footsteps or evade) based on a probability distribution.
+
+This is a closer model to reality because both poachers and patrollers leave traces of their presence (footprints, blood, broken branches, etc.), and veterans from each respective group will naturally have an advantage over their less experienced counterparts.
+
+The addition of this real-time information greatly affects the complexity of the game, however. Specifically it now models an extensive-form game, in which an exponentially-growing game tree is used [@russel09]. As such, teaching such an agent is only feasible in small games, but it is shown later that the resulting strategy is applicable to larger games.
+
+<!-- Note: This assumes only local observations. We can suggest that drones and areal footage can be modelled as well, from both the attacker and defender. -->
+
+<!-- Also, it is not mentioned if alpha-beta pruning is used here -->
 
 ### DeDOL Algorithm
 
-* Explain what the Double-Oracle framework is
-* Expand upon the domain-specific heuristics it uses
+DeDOL uses a neural network to learn successful defender strategies for fixed movement. The double-oracle method introduced by McMahan et al. [@inproceedings] is used by providing two heuristic strategies, one for the attacker and one for the defender. Each iteration both neural networks train using the real-time information gained that round.
+
+### Outputs
+
+The simulation runs the now more-complex GSG-I game with DeDOL, and compares it with conterfactual regret (CFR) minimization on small games, which is a known solution to extensive-form games. A good result indicates an improvement to existing processes, so the method is sound.
 
 ## Imperfect Prior Knowledge
 
@@ -227,15 +239,6 @@ do you see as the weaknesses and strengths of the proposed methods? -->
 
 Include:
 
-* GSG abstraction - benefits and trade-offs. What benefit does the GSG abstraction have over an attempted perfect simulation?
-
-
-The work done by Qian et al. [@qian16] successfully introduce a more realistic scenario when simulating GSGs. The use of the RMAB is a useful abstraction of the real-world dilemma between exploring new areas and patrolling existing areas. The results of the experiment clearly show an improvement over existing models, especially as learning rounds increase. Care must be taken to address the fact that poachers are often well-funded [@inbook] and have just as much observability of the defenders as the defenders do of the poachers.
-
-* GSG-I - Same question
-* MINION - Is this seemingly the ultimate solution? How would it perform against GSG-I? How can its work be combined with previous work discussed in this paper?
-* Additional insight - how this problem is still not fully addressed, and what could be done in further research.
-
 The introduction of GSG has effectively abstracted the conflict between
 poachers and the law enforcement agents attempting to stop them. The ability to
 simulate multiple rounds against a simulated human presents a clear benefit for
@@ -244,6 +247,13 @@ Fang et al. [@fang15] showed that the enhanced PA-M strategy provided a high
 average expected utility compared to the baseline algorithm used. Assuming the
 abstraction is valid, this indicates the strategy would be successful if
 employed by actual law enforcement.
+
+The work done by Qian et al. [@qian16] successfully introduce a more realistic scenario when simulating GSGs. The use of the RMAB is a useful abstraction of the real-world dilemma between exploring new areas and patrolling existing areas. The results of the experiment clearly show an improvement over existing models, especially as learning rounds increase. Care must be taken to address the fact that poachers are often well-funded [@inbook] and have just as much observability of the defenders as the defenders do of the poachers.
+
+GSG-I was introduced by Wang et al. [@wang19] revealed that real-time information adds a measure of complexity to GSG, but makes the abstraction more accurate. Furthermore, while their simulations could only train on small games, the resulting trained neural network out-performed existing extensive-form games when tested in a larger game. This is a very successful advancement in the field and will likely lead to more sophisticated patrol strategies.
+
+* MINION - Is this seemingly the ultimate solution? How would it perform against GSG-I? How can its work be combined with previous work discussed in this paper?
+* Additional insight - how this problem is still not fully addressed, and what could be done in further research.
 
 However, the assumption that adversaries act with bounded rationality may only
 be useful in the short-term. Access to computing resources (and even the PAWS
