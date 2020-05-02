@@ -25,6 +25,7 @@ bibliography:
    - citation-320268965.bib
    - acm_1671238.bib
    - citation-221345955.bib
+   - nat_geo.bib
 csl: ieee.csl
 secnumdepth: 2
 header-includes:
@@ -272,6 +273,7 @@ valuable in this case. For example, the defending agent could keep track of how 
 
 <!-- Discuss over-fitting -->
 
+
 <!-- historical data - age a factor? -->
 
 
@@ -281,9 +283,7 @@ impact of the research on the field and what research questions should be
 addressed to advance the field? -->
 # Conclusions
 
-* Summarize research
-* Discuss how PAWS is helping law enforcement currently, and how these algorithms can be used to improve it
-* Find a unique idea as a future research goal
+This paper has shown four valid and successful research pages in the field of Green Security Games. Research in this field builds on work done by predecessors, similar to how a learning agent builds a knowledge base upon previous experience. As more rational and better performing agents are invented the abstraction GSG provides can become more refined. In turn, these advancements make their way into planning tools in use today by rangers to fight poachers [@natgeo16]. More research questions must be answered to continue to reduce poaching and the killing of endangered species. This can be done by improving the observability of the attackers by the defender, for example. Reliable data gathering in new areas is of utmost importance, since relying on the same data to train neural networks inevitably leads to over-fitting. Finally the assumption of bounded rationality must be constantly re-evaluated, given the ubiquity of AI resources available to both poachers and rangers.
 
 # References
 
